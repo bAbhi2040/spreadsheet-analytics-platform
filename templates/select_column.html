@@ -1,0 +1,17 @@
+<!-- templates/sekect_column.html -->
+
+<h1>Select Column</h1>
+
+<form action="/analyze" method = "post">
+
+    <select name = "column">
+
+        {% for col in columns %}
+            <option value="{{ col }}">{{ col }}</option>
+        {% endfor %}
+        
+    </select>
+
+<button type = "submit">Analyze</button>
+
+</form>
