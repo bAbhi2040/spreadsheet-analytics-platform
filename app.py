@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, render_template
 import os
 import pandas as pd
 
@@ -8,14 +8,7 @@ df_global = None
 
 @app.route("/")
 def home():
-    return """
-    <h1>Upload Spreadsheet</h1>
-
-    <form action="/upload" method="post" enctype="multipart/form-data">
-        <input type="file" name="file">
-        <button type="submit">Upload</button>
-    </form>
-    """
+    return render_template("home.html")
 
 UPLOAD_FOLDER = "uploads"
 
@@ -28,24 +21,7 @@ def upload():
     df_global = pd.read_excel(filepath, engine="openpyxl")
     columns = df_global.columns.tolist()
 
-    options = ''
-
-    for col in columns:
-        options += f'<option value = "{col}">{col}</option>'
-
-    return f"""
-    <h1>Select Column</h1>
-
-    <form action="/analyze" method = "post">
-
-        <select name = "column">
-            {options}
-        </select>
-
-        <button type = "submit">Analyze</button>
-
-    </form>
-    """
+    return render_template("select_column.html", columns=columns)
 
 app.run(debug=True)
 
