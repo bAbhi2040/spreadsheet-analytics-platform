@@ -23,5 +23,20 @@ def upload():
 
     return render_template("select_column.html", columns=columns)
 
+@app.route("/analyze", methods=["POST"])
+def analyze():
+    column = request.form["column"]
+
+    col_data = df_global[column]
+
+    stats = {
+        "mean": col_data.mean(),
+        "median": col_data.median(),
+        "std": col_data.std(),
+        "missing": col_data.isnull().sum()
+    }
+
+    return render_template("analysis.html", column=column, stats=stats)
+
 app.run(debug=True)
 
