@@ -1,10 +1,26 @@
 <h1>Analysis for {{ column }}</h1>
 
+{% if stats.type == "numeric" %}
+
 <ul>
     <li>Mean: {{ stats.mean }}</li>
     <li>Median: {{ stats.median }}</li>
     <li>Standard deviation: {{ stats.std }}</li>
     <li>Missing values: {{ stats.missing }}</li>
 </ul>
+
+{% if plot_path %}
+    <img src="{{  plot_path  }}" width="500">
+{% endif %}
+
+{% else %}
+
+<ul>
+    <li>Unique values: {{ stats.unique }}</li>
+    <li>Most common value: {{ stats.most_common }}</li>
+    <li>Missing values: {{ stats.missing }}</li>
+</ul>
+
+{% endif %}
 
 <a href="/">Upload another file</a>
