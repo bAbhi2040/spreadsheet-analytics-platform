@@ -1,0 +1,34 @@
+<!-- templates/overview.html -->
+
+<h1>Dataset Overview</h1>
+
+<p>Rows: {{ shape[0] }}</p>
+<p>Columns: {{ shape[1] }}</p>
+
+<h2>Column Types</h2>
+
+<ul>
+    {% for col, dtype in dtypes.items() %}
+        <li>{{ col }} : {{ dtype }}</li>
+    {% endfor %}
+</ul>
+
+<h2>Preview</h2>
+
+{{ preview|safe }}
+
+<h2>Select Column</h2>
+
+<form action="/analyze" method="post">
+
+    <select name = "column">
+
+        {% for col in columns %}
+            <option value="{{ col }}">{{ col }}</option>
+        {% endfor %}
+
+    </select>
+
+<button type = "submit">Analyze</button>
+
+</form>
