@@ -1,6 +1,15 @@
 <!-- templates/overview.html -->
 
 <style>
+    body {
+        font-family: Arial;
+        margin: 40px;
+    }
+
+    h1, h2 {
+        color: rgb(61, 59, 59);
+    }
+
     table {
         border-collapse: collapse;
     }
@@ -8,6 +17,11 @@
     th, td {
         border: 1px solid black;
         padding: 8px;
+    }
+
+    select, button {
+        padding: 8px;
+        margin-top: 10px;
     }
 </style>
 
@@ -26,9 +40,11 @@
 
 <h2>Preview</h2>
 
-{{ preview|safe }}
+<div>
+    {{ preview|safe }}
+</div>
 
-<h2>Select Column</h2>
+<h2>Select a column for analysis</h2>
 
 <form action="/analyze" method="post">
 
@@ -40,6 +56,6 @@
 
     </select>
 
-<button type = "submit">Analyze</button>
+<button type = "submit">Generate an analysis</button>
 
 </form>

@@ -17,9 +17,16 @@ UPLOAD_FOLDER = "uploads"
 def upload():
     global df_global
     file = request.files['file']
+    if file.filename == "":
+        return "No file selected"
+    if not file.filename.endswith(".xlsx"):
+        return "Please upload an Excel document or file"
     filepath = os.path.join(UPLOAD_FOLDER, file.filename)
     file.save(filepath)
-    df_global = pd.read_excel(filepath, engine="openpyxl")
+    try:
+        df_global = pd.read_excel(filepath, engine="openpyxl")
+    except Exception:
+        return "Data file invalid or corrupted"
     columns = df_global.columns.tolist()
 
     return render_template(
