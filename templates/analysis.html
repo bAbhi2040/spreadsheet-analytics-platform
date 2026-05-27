@@ -1,26 +1,142 @@
-<h1>Analysis for {{ column }}</h1>
+<!-- templates/analysis.html -->
 
-{% if stats.type == "numeric" %}
+<div class="container">
 
-<ul>
-    <li>Mean: {{ stats.mean }}</li>
-    <li>Median: {{ stats.median }}</li>
-    <li>Standard deviation: {{ stats.std }}</li>
-    <li>Missing values: {{ stats.missing }}</li>
-</ul>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 40px;
+            color: #333;
+        }
 
-{% if plot_path %}
-    <img src="{{  plot_path  }}" width="500">
-{% endif %}
+        .container {
+            max-width: 950px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
 
-{% else %}
+        h1, h2, h3 {
+            margin-top: 0;
+            color: rgb(61, 59, 59);
+        }
 
-<ul>
-    <li>Unique values: {{ stats.unique }}</li>
-    <li>Most common value: {{ stats.most_common }}</li>
-    <li>Missing values: {{ stats.missing }}</li>
-</ul>
+        .section {
+            margin-bottom: 35px;
+        }
 
-{% endif %}
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 10px;
+        }
 
-<a href="/">Upload another file</a>
+        th {
+            background-color: #2d6cdf;
+            color: white;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: left;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        select, button {
+            padding: 10px;
+            width: 100%;
+            font-size: 14px;
+            border-radius: 5px;
+        }
+
+        select {
+            border: 1px solid #ccc;
+        }
+
+        button {
+            background-color: #2d6cdf;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background-color: #1f57b5;
+        }
+
+        img {
+            margin-top: 20px;
+            width: 100%;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #2d6cdf;
+            font-weight: bold;
+        }
+
+    </style>
+
+    <div class="'section">
+
+        {% if stats.type == "histogram" %}
+
+        <h1>Analysis for {{ column }}</h1>
+
+        <ul>
+            <li>Mean: {{ stats.mean }}</li>
+            <li>Median: {{ stats.median }}</li>
+            <li>Standard deviation: {{ stats.std }}</li>
+            <li>Missing values: {{ stats.missing }}</li>
+        </ul>
+
+        {% if plot_path %}
+            <img src="{{ url_for('static', filename=plot_path) }}">
+        {% endif %}
+
+        {% elif stats.type == 'scatter' %}
+
+        <h1>Analysis for {{ column }} vs {{ column2 }}</h1>
+
+        {% if plot_path %}
+            <img src="{{ url_for('static', filename=plot_path) }}">
+        {% endif %}
+
+
+        {% else %}
+
+        <p>No analysis availble</p>
+
+        {% endif %}
+
+    </div>
+
+    <br><br>
+
+    <a class="back-link" href="/">
+        Upload another file
+    </a>
+
+</div>

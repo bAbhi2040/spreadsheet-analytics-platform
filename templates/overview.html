@@ -1,61 +1,171 @@
 <!-- templates/overview.html -->
 
-<style>
-    body {
-        font-family: Arial;
-        margin: 40px;
-    }
+<div class="container">
 
-    h1, h2 {
-        color: rgb(61, 59, 59);
-    }
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 40px;
+            color: #333;
+        }
 
-    table {
-        border-collapse: collapse;
-    }
+        .container {
+            max-width: 950px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
 
-    th, td {
-        border: 1px solid black;
-        padding: 8px;
-    }
+        h1, h2, h3 {
+            margin-top: 0;
+            color: rgb(61, 59, 59);
+        }
 
-    select, button {
-        padding: 8px;
-        margin-top: 10px;
-    }
-</style>
+        .section {
+            margin-bottom: 35px;
+        }
 
-<h1>Dataset Overview</h1>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 10px;
+        }
 
-<p>Rows: {{ shape[0] }}</p>
-<p>Columns: {{ shape[1] }}</p>
+        th {
+            background-color: #2d6cdf;
+            color: white;
+        }
 
-<h2>Column Types</h2>
+        th, td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: left;
+        }
 
-<ul>
-    {% for col, dtype in dtypes.items() %}
-        <li>{{ col }} : {{ dtype }}</li>
-    {% endfor %}
-</ul>
+        ul {
+            padding-left: 20px;
+        }
 
-<h2>Preview</h2>
+        .form-group {
+            margin-bottom: 20px;
+        }
 
-<div>
-    {{ preview|safe }}
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        select, button {
+            padding: 10px;
+            width: 100%;
+            font-size: 14px;
+            border-radius: 5px;
+        }
+
+        select {
+            border: 1px solid #ccc;
+        }
+
+        button {
+            background-color: #2d6cdf;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background-color: #1f57b5;
+        }
+
+        img {
+            margin-top: 20px;
+            width: 100%;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #2d6cdf;
+            font-weight: bold;
+        }
+
+    </style>
+
+    <div class="section">
+
+        <h1>Dataset Overview</h1>
+
+        <p>Rows: {{ shape[0] }}</p>
+        <p>Columns: {{ shape[1] }}</p>
+
+    </div>
+
+    <div class="section">
+
+        <h2>Column Types</h2>
+
+        <ul>
+            {% for col, dtype in dtypes.items() %}
+                <li>{{ col }} : {{ dtype }}</li>
+            {% endfor %}
+        </ul>
+
+        <h2>Preview</h2>
+
+            <div>
+                {{ preview|safe }}
+            </div>
+
+        <hr>
+
+    </div>
+
+    <div class="section">
+
+        <h2>Generate analysis</h2>
+
+        <form action="/analyze" method="post">
+
+            <div class="form-group">
+                <label>Choose plot type:</label>
+                <select name="plot_type" id="plot_type">
+                    <option value="hist">Histogram (one column)</option>
+                    <option value="scatter">Scatter plot (two columns)</option>
+
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Primary column</label>
+                <select name = "column">
+                    {% for col in columns %}
+                        <option value="{{ col }}">{{ col }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Secondary column (for scatter plot only)</label>
+                <select name = "column2">
+                    <option value="">None</option>
+                    {% for col in columns %}
+                        <option value="{{ col }}">{{ col }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button type = "submit">Generate an analysis</button>
+
+        </form>
+    
+    </div>
+
 </div>
-
-<h2>Select a column for analysis</h2>
-
-<form action="/analyze" method="post">
-
-    <select name = "column">
-
-        {% for col in columns %}
-            <option value="{{ col }}">{{ col }}</option>
-        {% endfor %}
-
-    </select>
-
-<button type = "submit">Generate an analysis</button>
-
-</form>
