@@ -97,6 +97,11 @@
             font-weight: bold;
         }
 
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
     </style>
 
     <div class="section">
@@ -120,7 +125,7 @@
 
         <h2>Preview</h2>
 
-            <div>
+            <div class="table-wrapper">
                 {{ preview|safe }}
             </div>
 

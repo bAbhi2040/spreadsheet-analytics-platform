@@ -129,9 +129,11 @@ def analyze():
 
     return render_template("analysis.html",
                            column=column,
+                           column2=column2,
                            stats=stats,
                            plot_path=plot_path
-                        )
+                           )
+    
 
 app.run(debug=True)
 

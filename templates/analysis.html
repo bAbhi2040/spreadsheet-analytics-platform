@@ -113,7 +113,7 @@
         </ul>
 
         {% if plot_path %}
-            <img src="{{ url_for('static', filename=plot_path) }}">
+            <img src="{{ plot_path }}">
         {% endif %}
 
         {% elif stats.type == 'scatter' %}
@@ -121,7 +121,7 @@
         <h1>Analysis for {{ column }} vs {{ column2 }}</h1>
 
         {% if plot_path %}
-            <img src="{{ url_for('static', filename=plot_path) }}">
+            <img src="{{ plot_path }}">
         {% endif %}
 
 
