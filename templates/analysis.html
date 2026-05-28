@@ -120,6 +120,11 @@
 
         <h1>Analysis for {{ column }} vs {{ column2 }}</h1>
 
+        <ul>
+            <li>Correlation coefficient: {{ stats.correlation }}</li>
+            <li>Relationship strength: {{ stats.relationship }}</li>
+        </ul>
+
         {% if plot_path %}
             <img src="{{ plot_path }}">
         {% endif %}
