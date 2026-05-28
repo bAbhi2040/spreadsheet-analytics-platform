@@ -21,10 +21,16 @@ def upload():
     file = request.files['file']
 
     if file.filename == "":
-        return "No file selected"
+        return render_template(
+            "error.html",
+            message = "No file selected"
+        )
     
     if not file.filename.endswith(".xlsx"):
-        return "Please upload an Excel document or file"
+        return render_template(
+            "error.html",
+            message = "Please upload an Excel document or file"
+        )
     
     unique_filename = f"{uuid.uuid4()}.xlsx"
     filepath = os.path.join(UPLOAD_FOLDER, unique_filename)
@@ -35,7 +41,10 @@ def upload():
         session["filepath"] = filepath
 
     except Exception:
-        return "Data file invalid or corrupted"
+        return render_template(
+            "error.html",
+            message = "Data file invalid or corrupted"
+        )
 
     return render_template(
         "overview.html",
@@ -50,29 +59,40 @@ def analyze():
     filepath = session.get("filepath")
 
     if not filepath:
-        return "No valid dataset uploaded"
+        return render_template(
+            "error.html",
+            message = "No valid dataset uploaded"
+        )
     
     try:
         df = pd.read_excel(filepath, engine="openpyxl")
     
     except Exception:
-        return "Could not load dataset"
+        return render_template(
+            "error.html",
+            message = "Could not load dataset"
+        )
     
     plot_type = request.form["plot_type"]
     column = request.form["column"]
     column2 = request.form["column2"]
 
     if column not in df.columns:
-        return "Selected column is not a valid option"
+        return render_template(
+            "error.html",
+            message = "Selected column is not a valid option"
+        )
     
-    col_data = df[column]
-    col_data = col_data.dropna()
+    col_data = df[column].dropna()
     plot_path = None
     stats = {}
 
     if plot_type == "hist":
         if not pd.api.types.is_numeric_dtype(col_data):
-            return "Histogram requires a numeric column"
+            return render_template(
+                "error.html",
+                message = "Histogram requires a numeric column"
+            )
 
         stats = {
             "type": "histogram",
@@ -105,10 +125,16 @@ def analyze():
     elif plot_type == "scatter":
 
         if not column2 or column2 not in df.columns:
-            return "Scatter plots require a second column"
+            return render_template(
+                "error.html",
+                message = "Scatter plots require a second column"
+            )
         
         if not pd.api.types.is_numeric_dtype(df[column]) or not pd.api.types.is_numeric_dtype(df[column2]):
-            return "Scatter plots require both columns to be numeric"
+            return render_template(
+                "error.html",
+                message = "Scatter plots require both columns to be numeric"
+            )
         
         scatter_data = df[[column, column2]].dropna()
         correlation = scatter_data[column].corr(scatter_data[column2])
@@ -146,7 +172,10 @@ def analyze():
         plt.close()
     
     else:
-        return "Invalid plot type selected"
+        return render_template(
+            "error.html",
+            message = "Invalid plot type selected"
+        )
 
 
     return render_template("analysis.html",
@@ -156,7 +185,6 @@ def analyze():
                            plot_path=plot_path
                            )
     
-
 if __name__ == "__main__":
     app.run(debug=True)
 
