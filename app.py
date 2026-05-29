@@ -7,6 +7,17 @@ import uuid
 app = Flask(__name__)
 app.secret_key = "dev-secret-key"
 
+def render_overview(df, error=None):
+
+    return render_template(
+        "overview.html",
+        columns=df.columns.tolist(),
+        shape=df.shape,
+        dtypes=df.dtypes,
+        preview=df.head().to_html(),
+        error=error
+    )
+
 @app.route("/")
 def home():
     return render_template("home.html")
@@ -78,9 +89,9 @@ def analyze():
     column2 = request.form["column2"]
 
     if column not in df.columns:
-        return render_template(
-            "error.html",
-            message = "Selected column is not a valid option"
+        return render_overview(
+            df,
+            error = "Selected column is not a valid option"
         )
     
     col_data = df[column].dropna()
@@ -89,9 +100,9 @@ def analyze():
 
     if plot_type == "hist":
         if not pd.api.types.is_numeric_dtype(col_data):
-            return render_template(
-                "error.html",
-                message = "Histogram requires a numeric column"
+            return render_overview(
+                df,
+                error = "Histogram requires a numeric column"
             )
 
         stats = {
@@ -125,15 +136,15 @@ def analyze():
     elif plot_type == "scatter":
 
         if not column2 or column2 not in df.columns:
-            return render_template(
-                "error.html",
-                message = "Scatter plots require a second column"
+            return render_overview(
+                df,
+                error = "Scatter plots require a second column"
             )
         
         if not pd.api.types.is_numeric_dtype(df[column]) or not pd.api.types.is_numeric_dtype(df[column2]):
-            return render_template(
-                "error.html",
-                message = "Scatter plots require both columns to be numeric"
+            return render_overview(
+                df,
+                error = "Scatter plots require both columns to be numeric"
             )
         
         scatter_data = df[[column, column2]].dropna()
@@ -172,9 +183,9 @@ def analyze():
         plt.close()
     
     else:
-        return render_template(
-            "error.html",
-            message = "Invalid plot type selected"
+        return render_overview(
+                df,
+                error = "Invalid plot type selected"
         )
 
 

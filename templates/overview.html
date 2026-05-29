@@ -102,7 +102,23 @@
             overflow-x: auto;
         }
 
+        .error-box {
+            background-color: #ffe5e5;
+            color: #b00020;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
     </style>
+
+    {% if error %}
+
+    <div class="error-box">
+        {{ error }}
+    </div>
+
+    {% endif %}
 
     <div class="section">
 
