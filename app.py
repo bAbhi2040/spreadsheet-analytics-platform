@@ -1,8 +1,10 @@
-from flask import Flask, request, render_template, session
+from flask import Flask, request, render_template, session, send_file
 import os
 import pandas as pd
 import matplotlib.pyplot as plt
 import uuid
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image
+from reportlab.lib.styles import getSampleStyleSheet
 
 app = Flask(__name__)
 app.secret_key = "dev-secret-key"
@@ -24,8 +26,10 @@ def home():
 
 UPLOAD_FOLDER = "uploads"
 PLOT_FOLDER = os.path.join("static", "plots")
+REPORT_FOLDER = "reports"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(PLOT_FOLDER, exist_ok=True)
+os.makedirs(REPORT_FOLDER, exist_ok=True)
 
 @app.route("/upload", methods=["POST"])
 def upload():
@@ -107,10 +111,10 @@ def analyze():
 
         stats = {
             "type": "histogram",
-            "mean": round(col_data.mean(), 4),
-            "median": round(col_data.median(), 4),
-            "std": round(col_data.std(), 4),
-            "missing": col_data.isnull().sum()
+            "mean": float(round(col_data.mean(), 4)),
+            "median": float(round(col_data.median(), 4)),
+            "std": float(round(col_data.std(), 4)),
+            "missing": int(col_data.isnull().sum())
         }
 
         plot_filename = f"{uuid.uuid4()}_hist.png"
@@ -160,7 +164,7 @@ def analyze():
     
         stats = {
             "type": "scatter",
-            "correlation": round(correlation, 4),
+            "correlation": float(round(correlation, 4)),
             "relationship": relationship
             }
     
@@ -188,6 +192,10 @@ def analyze():
                 error = "Invalid plot type selected"
         )
 
+    session["column"] = column
+    session["column2"] = column2
+    session["plot_path"] = plot_path
+    session["stats"] = stats
 
     return render_template("analysis.html",
                            column=column,
@@ -195,7 +203,48 @@ def analyze():
                            stats=stats,
                            plot_path=plot_path
                            )
+
+@app.route("/download")
+def download():
+    pdf_filename = f"{uuid.uuid4()}.pdf"
+    pdf_path = os.path.join(REPORT_FOLDER, pdf_filename)
+    doc = SimpleDocTemplate(pdf_path)
+    styles = getSampleStyleSheet()
+    elements = []
+
+    elements.append(
+        Paragraph("Spreadsheet Analysis Report", styles["Title"])
+    )
+    elements.append(Spacer(1, 12))
+
+    stats = session.get("stats", {})
+
+    for key, value in stats.items():
+        elements.append(
+            Paragraph(
+                f"{key}: {value}",
+                styles["BodyText"]
+            )
+        )
     
+    plot_path = session.get("plot_path")
+
+    if plot_path:
+        elements.append(
+            Image(
+                plot_path,
+                width=400,
+                height=300
+            )
+        )
+
+    doc.build(elements)
+
+    return send_file(
+        pdf_path,
+        as_attachment=True
+    )
+
 if __name__ == "__main__":
     app.run(debug=True)
 
