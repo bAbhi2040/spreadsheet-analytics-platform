@@ -47,6 +47,7 @@ A Flask-based web application that allows users to upload Excel spreadsheets, ge
 
 ## Project Structure
 
+```text
 spreadsheet-site/
 │
 ├── app.py
@@ -64,35 +65,48 @@ spreadsheet-site/
 │
 ├── uploads/
 └── reports/
+```
 
 ## Installation
 
 Clone the repository:
 
+```bash
 git clone <repository-url>
 cd spreadsheet-site
+```
 
 Install dependencies:
 
+```bash
 pip install -r requirements.txt
+```
 
 Set a secret key:
 
 ### Windows PowerShell
 
+```powershell
 $env:SECRET_KEY="your-secret-key"
+```
 
 ### Linux / macOS
 
+```bash
 export SECRET_KEY="your-secret-key"
+```
 
 Run the application:
 
+```bash
 python app.py
+```
 
 Open:
 
+```text
 http://127.0.0.1:5000
+```
 
 in your browser.
 
