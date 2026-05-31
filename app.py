@@ -1,6 +1,13 @@
 from flask import Flask, request, render_template, session, send_file
 import os
 import pandas as pd
+
+import secrets
+print(secrets.token_hex(32))
+
+import matplotlib
+matplotlib.use("Agg")
+
 import matplotlib.pyplot as plt
 import uuid
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image
